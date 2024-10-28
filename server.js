@@ -46,6 +46,32 @@ app.get('/obtenerConsultas', async (req, res) => {
     }
 });
 
+// Endpoint para actualizar el estado y respuesta de una consulta (PUT)
+app.put('/actualizarConsulta/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { estado, respuesta } = req.body;
+        const request = new sql.Request();
+        await request.query(`UPDATE Consultas SET Estado = '${estado}', Respuesta = '${respuesta}', FechaRespuesta = GETDATE() WHERE Id = ${id}`);
+        res.status(200).send('Consulta actualizada correctamente');
+    } catch (error) {
+        res.status(500).send('Error al actualizar la consulta');
+    }
+});
+
+// Endpoint para obtener el historial de consultas de un usuario (GET)
+app.get('/historialConsultas/:usuario', async (req, res) => {
+    try {
+        const { usuario } = req.params;
+        const request = new sql.Request();
+        const result = await request.query(`SELECT * FROM Consultas WHERE Usuario = '${usuario}' ORDER BY FechaConsulta DESC`);
+        res.status(200).json(result.recordset);
+    } catch (error) {
+        res.status(500).send('Error al obtener el historial de consultas');
+    }
+});
+
+
 // Iniciar el servidor
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
