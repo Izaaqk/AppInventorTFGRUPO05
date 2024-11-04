@@ -71,6 +71,28 @@ app.get('/historialConsultas/:usuario', async (req, res) => {
     }
 });
 
+// Endpoint para guardar una calificación (POST)
+app.post('/guardarCalificacion', async (req, res) => {
+    try {
+        const { usuario, calificacion, comentario } = req.body;
+        const request = new sql.Request();
+        await request.query(`INSERT INTO Calificaciones (Usuario, Calificacion, Comentario, FechaCalificacion) VALUES ('${usuario}', ${calificacion}, '${comentario}', GETDATE())`);
+        res.status(200).send('Calificación guardada correctamente');
+    } catch (error) {
+        res.status(500).send('Error al guardar la calificación');
+    }
+});
+
+// Endpoint para obtener todas las calificaciones (GET)
+app.get('/obtenerCalificaciones', async (req, res) => {
+    try {
+        const request = new sql.Request();
+        const result = await request.query('SELECT * FROM Calificaciones ORDER BY FechaCalificacion DESC');
+        res.status(200).json(result.recordset);
+    } catch (error) {
+        res.status(500).send('Error al obtener las calificaciones');
+    }
+});
 
 //todo
 
