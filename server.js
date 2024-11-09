@@ -99,7 +99,7 @@ app.post('/guardarFeedback', async (req, res) => {
     try {
         const { usuario, feedback} = req.body;
         const request = new sql.Request();
-        await request.query(`INSERT INTO Feedback (Usuario, Feedback, FechaFeedback) VALUES ('${usuario}', ${feedback}, GETDATE())`);
+        await request.query(`INSERT INTO Feedback (Usuario, Feedback, FechaFeedback) VALUES ('${usuario}', '${feedback}', GETDATE())`);
         res.status(200).send('Feedback guardado correctamente');
     } catch (error) {
         res.status(500).send('Error al guardar el feedback');
