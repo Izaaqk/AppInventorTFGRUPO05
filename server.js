@@ -94,7 +94,28 @@ app.get('/obtenerCalificaciones', async (req, res) => {
     }
 });
 
-//todo
+// Endpoint para guardar una calificación (POST)
+app.post('/guardarFeedback', async (req, res) => {
+    try {
+        const { usuario, feedback} = req.body;
+        const request = new sql.Request();
+        await request.query(`INSERT INTO Feedback (Usuario, Feedback, FechaFeedback) VALUES ('${usuario}', ${feedback}, GETDATE())`);
+        res.status(200).send('Feedback guardado correctamente');
+    } catch (error) {
+        res.status(500).send('Error al guardar el feedback');
+    }
+});
+
+// Endpoint para obtener todas las calificaciones (GET)
+app.get('/obtenerFeedback', async (req, res) => {
+    try {
+        const request = new sql.Request();
+        const result = await request.query('SELECT * FROM Feedback ORDER BY FechaFeedback DESC');
+        res.status(200).json(result.recordset);
+    } catch (error) {
+        res.status(500).send('Error al obtener el Feedback');
+    }
+});
 
 
 // Iniciar el servidor
